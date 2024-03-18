@@ -1,11 +1,4 @@
-/**
- Author:    Build Rise Shine with Nyros (BRS)
- Created:   11.05.2022
- Library / Component: Script file
- Description: Logic behind the app(fetching the data from the API)
- (c) Copyright by BRS with Nyros.
- **/
-const nasa_eonet_endpoint = "https://eonet.gsfc.nasa.gov/api/v3";
+const url = "https://eonet.gsfc.nasa.gov/api/v3";
 const geoCodingUrl  = 'https://api.mapbox.com/geocoding/v5/mapbox.places'
 let markers = [];
 let markerList = [];
@@ -39,11 +32,12 @@ $(function(){
 
 $( document ).ready(function() {
     fetchEvents();
-    $.getJSON( nasa_eonet_endpoint + "/categories")
+    $.getJSON( url + "/categories")
     .done(function( data ) {
         $("#eventTitle").html(null);
         $.each( data.categories, function( key, event ) {
-            $( "#eventList" ).append(`
+            if(event.title === 'Volcanoes' || event.title === 'Wildfires' || event.title === 'Sea and Lake Ice'){
+                $( "#eventList" ).append(`
                 <li class="event">
                     <div class='event-desc'>
                     <h3><a href='#' onclick='showLayers("${event.title}", "${event.link}");'>` + event.title + `</a></h3>
@@ -52,9 +46,12 @@ $( document ).ready(function() {
                     <img src="assets/img/categories/${event.id}.png"></img>
                 </li>
             `);
+            }
+            
         });
     });
 });
+
 
 function fetchEvents() {
     $("#eventTitle").html(null);
